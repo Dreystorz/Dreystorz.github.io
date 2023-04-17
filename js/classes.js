@@ -1,14 +1,100 @@
 const gravity = 0.2
 
-class Player {
-  constructor({position, velocity, groundBelow}) {
+class Sprite {
+  constructor({position, scale, sprites}){
     this.position = position
-    this.velocity = velocity
-    this.width = 25
-    this.height = 50
-    this.jumpCount = 2
+    this.sprites = sprites
+    this.animation = 'idle'
     this.direction = 'right'
-    this.groundBelow = groundBelow
+    this.scale = scale
+    this.framePosition = {
+      x: this.sprites[this.animation].firstFrame.x,
+      y: this.sprites[this.animation].firstFrame.y
+    }
+    this.framesComplete = 1
+    this.timer = 0
+  }
+
+  draw(){
+    if(this.direction === 'right'){
+      c.drawImage(
+        this.sprites.image.img.image,
+
+        ((this.sprites.image.size.width / this.sprites.image.size.framesX)
+        * (this.framePosition.x-1)) + this.sprites[this.animation].offSet.x,
+
+        ((this.sprites.image.size.height / this.sprites.image.size.framesY)
+        * (this.framePosition.y-1)) + this.sprites[this.animation].offSet.y,
+
+        this.sprites[this.animation].width,
+        this.sprites[this.animation].height,
+        this.position.x,
+        this.position.y,
+        (this.sprites[this.animation].width * this.scale),
+        (this.sprites[this.animation].height * this.scale),
+      )
+    } else {
+      c.drawImage(
+        this.sprites.imageReverse.img.image,
+
+        ((this.sprites.image.size.width / this.sprites.image.size.framesX)
+        * (this.sprites.image.size.framesX - (this.framePosition.x))) +
+        this.sprites[this.animation].offSet.x*0.7,
+
+        ((this.sprites.image.size.height / this.sprites.image.size.framesY)
+        * (this.framePosition.y-1)) + this.sprites[this.animation].offSet.y,
+
+        this.sprites[this.animation].width,
+        this.sprites[this.animation].height,
+        this.position.x,
+        this.position.y,
+        (this.sprites[this.animation].width * this.scale),
+        (this.sprites[this.animation].height * this.scale),
+      )
+    }
+  }
+
+  update(){
+    if(this.timer >= this.sprites[this.animation].frameTime){
+      if(this.framesComplete < this.sprites[this.animation].frames - 1){
+        if(this.framePosition.x < this.sprites.image.size.framesX){
+          this.framePosition.x++
+        } else {
+          this.framePosition.y++
+          this.framePosition.x = 1
+        }
+        this.framesComplete++
+      } else {
+        this.framePosition.x = this.sprites[this.animation].firstFrame.x
+        this.framePosition.y = this.sprites[this.animation].firstFrame.y
+        this.framesComplete = 0
+      }
+      this.timer = 0
+    } else {
+      this.timer++
+    }
+  }
+
+  setAnimation(animation){
+    if(this.animation !== animation){
+      this.animation = animation
+      this.framePosition.x = this.sprites[this.animation].firstFrame.x
+      this.framePosition.y = this.sprites[this.animation].firstFrame.y
+      this.framesComplete = 0
+    }
+  }
+}
+
+class Player extends Sprite{
+  constructor({position, scale, sprites, height = 46, width = 30}) {
+    super({position, scale, sprites})
+    this.position = position
+    this.height = height
+    this.width = width
+    this.velocity = {x: 0, y: 0}
+    this.jumpCount = 2
+    this.crash = false
+    this.landed = false
     this.attackBox = {
       attaking: false,
       width: 25,
@@ -21,9 +107,7 @@ class Player {
   }
 
   draw() {
-    c.fillStyle = 'blue'
-    c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
+    super.draw()
     if(this.attackBox.attaking){
       c.fillStyle = 'white'
       c.fillRect(
@@ -36,7 +120,7 @@ class Player {
 
   updateAttackBox() {
     if(this.direction === 'left') {
-      this.attackBox.position.x = this.position.x - this.width
+      this.attackBox.position.x = this.position.x - this.attackBox.width
       this.attackBox.position.y = this.position.y + this.height* 0.1
     }
     if(this.direction === 'right'){
@@ -45,34 +129,18 @@ class Player {
     }
   }
 
-  updateGround(groundBelow){
-    this.groundBelow = groundBelow
-  }
-
   update() {
-    this.updateAttackBox()
     this.draw()
-    this.obeyGravity()
-    this.position.y += this.velocity.y
+    this.fall()
+    super.update()
+    this.updateAttackBox()
+    this.position.x += this.velocity.x
   }
 
-  obeyGravity() {
-    this.position.x += this.velocity.x
-
-    let tile;
-    if(this.groundBelow != null &&
-      this.groundBelow.getCurrentTile(this.position.x, this.width) != null ){
-        tile = this.groundBelow.getCurrentTile(this.position.x, this.width)
-    }
-
-    if(tile != null && this.position.y + this.height + this.velocity.y >= tile.y &&
-      this.position.y + this.height <= tile.y){
-      this.velocity.y = 0
-      this.position.y = 
-        tile.y - this.height
-      this.jumpCount = 2;
-    } else {
-      this.velocity.y += gravity
+  fall(){
+    if((this.animation === 'jump' || this.animation === 'spin') &&
+    this.framesComplete == this.sprites[this.animation].frames - 1){
+      this.setAnimation('fall')
     }
   }
 
@@ -88,13 +156,25 @@ class Player {
   }
 
   moveLeft() {
-    this.velocity.x = -4
-    this.direction = 'left'
+    if(this.crash){
+      setTimeout(() => {
+        this.crash = false
+      }, 200);
+    } else {
+      this.velocity.x = -4
+      this.direction = 'left'
+    }
   }
 
   moveRight() {
-    this.velocity.x = 4
-    this.direction = 'right'
+    if(this.crash){
+      setTimeout(() => {
+        this.crash = false
+      }, 200);
+    } else {
+      this.velocity.x = 4
+      this.direction = 'right'
+    }
   }
 
   stopHorizontalMove(){
@@ -109,253 +189,3 @@ class Player {
   }
 }
 
-class Ground {
-  constructor({position, tiles}){
-    this.position = position,
-    this.tiles = []
-    tiles.forEach(tile => {
-      let temp = new GroundTile(this.position.x + tile.position.x,
-        this.position.y + tile.position.y,
-        tile.size, tile.imgSrc)
-      this.tiles.push(temp)
-    });
-    this.size = {
-      width: 48,
-      height: 48
-    }
-  }
-
-  draw() {
-    this.tiles.forEach(tile => {
-      c.drawImage(tile.image, tile.x, tile.y)
-    });
-  }
-
-  update() {
-    this.draw()
-  }
-
-  getCurrentTile(x, width) {
-    let temp = null;
-    this.tiles.forEach(tile => {
-      if(x + width >= tile.x 
-      && x <= tile.x + tile.size.width && temp == null){
-        temp = tile;
-      }
-    });
-    return temp;
-  }
-}
-
-class GroundTile {
-  constructor(positionX, positionY, size, imgSrc){
-    this.x = positionX
-    this.y = positionY
-    this.size = size
-    this.image = new Image()
-    this.image.src = imgSrc
-  }
-}
-
-class Sprite {
-  constructor({position, size, imgSrc}) {
-    this.position = position
-    this.size = size
-    this.image = new Image()
-    this.image.src = imgSrc
-  }
-
-  draw() {
-    c.drawImage(this.image, this.position.x, this.position.y, this.size.width, this.size.height)
-  }
-
-  update() {
-    this.draw()
-  }
-}
-
-class Background {
-  constructor({position, size, imgSrcFar, imgSrcMid, imgSrcNear}) {
-    this.position = position
-    this.size = size
-    this.velocityX = 0
-    this.groundTiles = []
-
-    this.farTiles = [
-      new Sprite({
-        position: {
-          x: position.x,
-          y: position.y
-        },
-        size: {
-          width: 345,
-          height: size.height
-        },
-        imgSrc: imgSrcFar
-      }),
-      new Sprite({
-        position: {
-          x: position.x + 345,
-          y: position.y
-        },
-        size: {
-          width: 345,
-          height: size.height
-        },
-        imgSrc: imgSrcFar
-      }),
-      new Sprite({
-        position: {
-          x: position.x + 345 * 2,
-          y: position.y
-        },
-        size: {
-          width: 345,
-          height: size.height
-        },
-        imgSrc: imgSrcFar
-      }),
-       new Sprite({
-        position: {
-          x: position.x + 345 * 3,
-          y: position.y
-        },
-        size: {
-          width: 345,
-          height: size.height
-        },
-        imgSrc: imgSrcFar
-      })
-    ]
-
-    this.midTiles = [
-      new Sprite({
-        position: {
-          x: position.x,
-          y: position.y
-        },
-        size: {
-          width: 420,
-          height: size.height
-        },
-        imgSrc: imgSrcMid
-      }),
-      new Sprite({
-        position: {
-          x: position.x + 420,
-          y: position.y
-        },
-        size: {
-          width: 420,
-          height: size.height
-        },
-        imgSrc: imgSrcMid
-      }),
-      new Sprite({
-        position: {
-          x: position.x + 420 * 2,
-          y: position.y
-        },
-        size: {
-          width: 420,
-          height: size.height
-        },
-        imgSrc: imgSrcMid
-      }),
-       new Sprite({
-        position: {
-          x: position.x + 420 * 3,
-          y: position.y
-        },
-        size: {
-          width: 420,
-          height: size.height
-        },
-        imgSrc: imgSrcMid
-      })
-    ]
-
-    this.nearTiles = [
-      new Sprite({
-        position: {
-          x: position.x + 100,
-          y: position.y
-        },
-        size: {
-          width: 460,
-          height: size.height
-        },
-        imgSrc: imgSrcNear
-      }),
-      new Sprite({
-        position: {
-          x: position.x + 600,
-          y: position.y
-        },
-        size: {
-          width: 460,
-          height: size.height
-        },
-        imgSrc: imgSrcNear
-      })
-    ]
-  }
-
-  draw() {
-    this.farTiles.forEach(tile => {
-      tile.update()
-    });
-
-    this.midTiles.forEach(tile => {
-      tile.update()
-    });
-
-    this.nearTiles.forEach(tile => {
-      tile.update()
-    });
-
-    this.drawGround()
-  }
-  
-  drawGround(){
-    this.groundTiles.forEach(tile => {
-      tile.draw()
-  });
-}
-
-  scrollLeft() {
-    this.velocityX = -4
-  }
-
-  stopScroll() {
-    this.velocityX = 0
-  }
-
-  update() {
-    this.farTiles.forEach(tile => {
-      if(tile.position.x + tile.size.width <= 0){
-        tile.position.x = tile.size.width*3 - 1
-      }
-      tile.position.x += this.velocityX/4
-    });
-
-    this.midTiles.forEach(tile => {
-      if(tile.position.x + tile.size.width <= 0){
-        tile.position.x = tile.size.width*3 - 1
-      }
-      tile.position.x += this.velocityX/2
-    });
-
-    this.nearTiles.forEach(tile => {
-      if(tile.position.x + tile.size.width <= 0){
-        tile.position.x = canvas.width + Math.floor(Math.random() * 500)
-      }
-      tile.position.x += this.velocityX
-    });
-
-    this.groundTiles.forEach(tile => {
-      tile.position.x += this.velocityX
-    });
-    this.draw()
-  }
-}
