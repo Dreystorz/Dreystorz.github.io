@@ -188,4 +188,3 @@ class Player extends Sprite{
     }, 100);
   }
 }
-

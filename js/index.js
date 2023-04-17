@@ -11,7 +11,6 @@ function drawCanvas() {
 
 /*------------------------Test Data---------------------------*/
 const assets = [[
-
   {
     position: {x: 450, y:526},
     size: {width: 193, height: 48},
