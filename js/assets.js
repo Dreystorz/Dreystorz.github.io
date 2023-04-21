@@ -130,6 +130,42 @@ const assets = [
   new AssetImage('img/Assets/3 Objects/Willows/3.png',199,183),
 ]
 
+class InteractiveImage {
+  constructor(imageSrc, frames, width , height, frameTime = 10) {
+    this.image = new Image()
+    this.image.src = imageSrc
+    this.frames = frames
+    this.width = width
+    this.height = height
+    this.w = width/frames,
+    this.h = height
+    this.frameTime = frameTime
+  }
+}
+
+const interactiveAssets = [
+  //Boxes
+  new InteractiveImage('img/Assets/3 Objects/Boxes/1.png',1,34,28),
+  new InteractiveImage('img/Assets/3 Objects/Boxes/2.png',1,34,27),
+  new InteractiveImage('img/Assets/3 Objects/Boxes/3.png',1,27,26),
+  new InteractiveImage('img/Assets/3 Objects/Boxes/4.png',1,33,26),
+  new InteractiveImage('img/Assets/3 Objects/Boxes/5.png',1,34,27),
+  new InteractiveImage('img/Assets/3 Objects/Boxes/6.png',1,27,26),
+  //Ladders
+  new InteractiveImage('img/Assets/3 Objects/Ladders/1.png',1,32,32),
+  new InteractiveImage('img/Assets/3 Objects/Ladders/2.png',1,32,32),
+  new InteractiveImage('img/Assets/3 Objects/Ladders/3.png',1,32,32),
+  new InteractiveImage('img/Assets/3 Objects/Ladders/4.png',1,32,32),
+  new InteractiveImage('img/Assets/3 Objects/Ladders/5.png',1,32,32),
+  new InteractiveImage('img/Assets/3 Objects/Ladders/6.png',1,32,32),
+  //Animated
+  new InteractiveImage('img/Assets/4 Animated objects/Chest.png',4,128,32),
+  new InteractiveImage('img/Assets/4 Animated objects/Coin.png',4,40,10),
+  new InteractiveImage('img/Assets/4 Animated objects/Flag.png',4,192,48),
+  new InteractiveImage('img/Assets/4 Animated objects/Key.png',4,48,8),
+  new InteractiveImage('img/Assets/4 Animated objects/Rune.png',4,64,16),
+]
+
 const sprites = {
   img: {
     img: new AssetImage('img/adventurer.png'),

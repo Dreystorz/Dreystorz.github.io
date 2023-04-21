@@ -24,11 +24,11 @@ class Sprite {
   }
 
   draw(){
-    /*c.fillText = 'white'
+    c.fillText = 'white'
     c.fillRect(this.position.x,
       this.position.y,
       this.width,
-      this.height)*/
+      this.height)
     if(this.direction === 'right'){
       let image = this.sprites[this.animation].img
       c.drawImage(
@@ -143,7 +143,8 @@ class Player extends Sprite{
       }
     }
     this.health = health
-    this.hitEnemy = false
+    this.keys = 0
+    this.coins = 0
   }
 
   draw() {
@@ -231,7 +232,7 @@ class Player extends Sprite{
     }, delay);
   }
 
-  doAction(cooldown = 600, delay = 100, animation = 'attack1') {
+  doAction(cooldown = 400, delay = 100, animation = 'attack1') {
     if(!this.attackBox.attacking){
       this.attackBox.attacking = true
       this.setAnimation(animation, true)
@@ -264,7 +265,6 @@ class Enemy extends Sprite{
       }
     }
     this.health = health
-    this.hitEnemy = false
     this.removed = false
     this.aiTimer = 0
     this.player = null
@@ -302,7 +302,7 @@ class Enemy extends Sprite{
     if(this.dead && !this.removed){
       setTimeout(() => {
         this.removed = true
-      }, 1000);
+      }, 2000);
     }
   }
 
@@ -310,7 +310,7 @@ class Enemy extends Sprite{
     this.velocity.x = 0
   }
 
-  loseHealth(amount) {
+  loseHealth(amount, cooldown) {
     if(!this.tookHit){
       if(this.health - amount <= 0){
         this.health = 0
@@ -323,7 +323,7 @@ class Enemy extends Sprite{
       this.tookHit = true
       setTimeout(() => {
         this.tookHit = false
-      }, 1000);
+      }, cooldown);
     }
   }
 
@@ -336,7 +336,7 @@ class Enemy extends Sprite{
   doAction(cooldown, delay, animation) {
     if(!this.attackBox.attaking){
       this.attackBox.attaking = true
-      this.setAnimation(animation, true, true)
+      this.setAnimation(animation, true)
       this.registerHit(delay)
       setTimeout(() => {
         this.attackBox.attaking = false
@@ -406,7 +406,7 @@ class FlyingEye extends Enemy {
           this.direction = 'right'
         } else {this.direction = 'left'}
       }
-      if(inRange){
+      if(inRange && !this.tookHit){
         this.doAction(1000, 500, 'attack1')
       }
     }
@@ -450,5 +450,166 @@ class FlyingEye extends Enemy {
 
   stopVerticalMove(){
     if(!this.dead) this.velocity.y = 0
+  }
+}
+
+class InteractiveProp {
+  constructor({image, position}){
+    this.image = image
+    this.position = position
+    this.frame = 0
+    this.frameTimer = 0
+  }
+
+  draw(){
+    // c.fillStyle = 'red'
+    // c.fillRect(
+    //   this.position.x,
+    //   this.position.y,
+    //   this.image.w,
+    //   this.image.h
+    // )
+    c.drawImage(
+      this.image.image,
+      this.frame*(this.image.width/this.image.frames),
+      0,
+      this.image.width/this.image.frames,
+      this.image.height,
+      this.position.x,
+      this.position.y,
+      this.image.w,
+      this.image.h
+    )
+  }
+
+  update(){
+    console.log('why')
+  }
+}
+
+class Box extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+    this.opened = false
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+
+  }
+  open(){
+    if(this.opened){
+      this.opened = true
+    }
+  }
+}
+
+class Chest extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+    this.opened = false
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+    if(this.opened){
+      this.frame = this.image.frames - 1
+    }
+  }
+  open(player){
+    if(player.keys > 0 && !this.opened){
+      player.keys--
+      this.opened = true
+    }
+  }
+}
+
+class Coin extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+    this.collected = false
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+    if(this.frameTimer >= this.image.frameTime){
+      if(this.frame < this.image.frames-1){
+        this.frame++
+      } else {
+        this.frame = 0
+      }
+      this.frameTimer = 0
+    } else {
+      this.frameTimer++
+    }
+  }
+}
+
+class Flag extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+    if(this.frameTimer >= this.image.frameTime){
+      if(this.frame < this.image.frames-1){
+        this.frame++
+      } else {
+        this.frame = 0
+      }
+      this.frameTimer = 0
+    } else {
+      this.frameTimer++
+    }
+  }
+}
+
+class Key extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+    this.collected = false
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+    if(this.frameTimer >= this.image.frameTime){
+      if(this.frame < this.image.frames-1){
+        this.frame++
+      } else {
+        this.frame = 0
+      }
+      this.frameTimer = 0
+    } else {
+      this.frameTimer++
+    }
+  }
+}
+
+class Rune extends InteractiveProp {
+  constructor({image, position}){
+    super({image, position})
+    this.collected = false
+  }
+  draw(){
+    super.draw()
+  }
+  update(){
+    console.log(this.frame)
+    if(this.frameTimer >= this.image.frameTime){
+      if(this.frame < this.image.frames-1){
+        this.frame++
+      } else {
+        this.frame = 0
+      }
+      this.frameTimer = 0
+    } else {
+      this.frameTimer++
+    }
   }
 }

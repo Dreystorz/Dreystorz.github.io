@@ -52,15 +52,25 @@ const keys = {
 }
 
 function checkCollisions(){
-  let nearbyTiles = level.getNearbyTiles(player.position.x)
+  let nearbyTiles = level.getNearbyTiles(player.position.x,player.position.y)
   envCollision(player, nearbyTiles)
+  collectItems(player)
+  checkInteract(player)
 
   level.activeEnemies.forEach(enemy => {
-    let nearbyTiles = level.getNearbyTiles(enemy.position.x)
+    let nearbyTiles = level.getNearbyTiles(enemy.position.x,enemy.position.y)
     envCollision(enemy, nearbyTiles)
   });
   
   checkHit()
+}
+
+function collectItems(entity){
+
+}
+
+function checkInteract(entity){
+
 }
 
 function checkHit(){
@@ -72,7 +82,7 @@ function checkHit(){
         player.attackBox.position.y < enemy.position.y + enemy.height
       ){
         if(!enemy.lastHit){
-          enemy.loseHealth(20, player)
+          enemy.loseHealth(20, 400)
         }
     }
     if( enemy.attackBox.hitRegistered &&
@@ -86,26 +96,11 @@ function checkHit(){
   });
 }
 
-function fall(entity, nearbyTiles){
-  entity.position.y += entity.velocity.y
-  entity.landed = false;
-  
-  nearbyTiles.forEach(tile => {
-    if( entity.position.x + entity.width >= tile.x &&
-        entity.position.x <= tile.x + tileSize &&
-        entity.position.y + entity.height + entity.velocity.y >= tile.y &&
-        entity.position.y + entity.height < tile.y + 3 + entity.velocity.y
-        && tile.type != 47 && tile.type != 48) {
-      entity.velocity.y = 0
-      entity.position.y = (tile.y + 2) - entity.height
-      entity.jumpCount = 2
-      entity.landed = true
-    }
-  })
-  if(!entity.landed) entity.velocity.y += entity.gravity
-}
-
 function envCollision(entity, nearbyTiles){
+  if(entity.position.y > canvas.height){
+    entity.lastHit = true
+    return
+  }
   entity.position.y += entity.velocity.y
   entity.landed = false;
   nearbyTiles.forEach(tile => {
@@ -115,7 +110,7 @@ function envCollision(entity, nearbyTiles){
       entity.position.y + entity.height > tile.y){
         let block = getLeastOverlap({
           ex: entity.position.x,
-          ey: entity.position.y,
+          ey: entity.position.y + entity.velocity.y,
           ew: entity.width,
           eh: tileSize,
           tx: tile.x,
@@ -123,7 +118,23 @@ function envCollision(entity, nearbyTiles){
           tw: tileSize,
           th: tileSize
         })
-        if(!(tile.type == '47' || tile.type == '48') || true){
+        // c.fillStyle = 'red'
+        // c.fillRect(
+        //   tile.x,
+        //   tile.y,
+        //   tileSize,
+        //   tileSize
+        // )
+        if(!(tile.type == '47' ||
+        tile.type == '48' ||
+        tile.type == '57' ||
+        tile.type == '58' ||
+        tile.type == '7' ||
+        tile.type == '8' ||
+        tile.type == '9' ||
+        tile.type == '39' ||
+        tile.type == '49' ||
+        tile.type == '59')){
           switch (block) {
             case 'below':
               entity.velocity.y = 0
@@ -150,8 +161,36 @@ function envCollision(entity, nearbyTiles){
             default:
               break;
           }
-        } else {
-         // 
+        } else {//y = mx + b, ey+eh = 1*ex+ey + //7,8,9,39,49,59
+          if(tile.type == '47' &&
+          entity.position.y > tile.y + tileSize - (entity.position.x + entity.width-tile.x) - entity.height+entity.width/2
+          && entity.position.x+entity.width/2 < tile.x+tileSize){
+            entity.velocity.y = 0
+            entity.position.y = tile.y + tileSize - (entity.position.x + entity.width-tile.x) - entity.height+entity.width/2
+            entity.jumpCount = 2
+            entity.landed = true
+          }
+          if(tile.type == '48' && // probably incorrect
+          entity.position.y > tile.y + tileSize - (entity.position.x + entity.width-tile.x) - entity.height+entity.width/2
+          && entity.position.x+entity.width/2 < tile.x+tileSize){
+            entity.velocity.y = 0
+            entity.position.y = tile.y + tileSize - (entity.position.x + entity.width-tile.x) - entity.height+entity.width/2
+            entity.jumpCount = 2
+            entity.landed = true
+          }
+          if((tile.type == '7' ||
+          tile.type == '8' ||
+          tile.type == '9' ||
+          tile.type == '39' ||
+          tile.type == '49' ||
+          tile.type == '59') &&
+          block == 'below' && 
+          entity.position.y + entity.height <= tile.y + entity.velocity.y){
+            entity.velocity.y = 0
+            entity.position.y = tile.y - entity.height
+            entity.jumpCount = 2
+            entity.landed = true
+          }
         }
       }
   });

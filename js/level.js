@@ -1,12 +1,15 @@
 class Level {
   constructor({player}){
     this.activeEnemies = []
+    this.activeIProps = []
+    this.collectibles = []
     this.update(0,0)
     this.pixelChange = 0
     this.page = 0
     this.player = player
 
     this.loadEnemies({section: this.pixelChange/tileSize, offset: 0})
+    this.loadIneractiveProps({section: this.pixelChange/tileSize, offset: 0})
   }
 
   loadEnemies({section, offset = 1}){
@@ -61,6 +64,107 @@ class Level {
     }
   }
 
+  loadIneractiveProps({section, offset = 1}){
+    console.log(section)
+    for (let i = 0; i < canvas.width/tileSize; i++) {
+      if(iProps[section+i] != undefined){
+        iProps[section+i].forEach((p) => {
+          let iprop
+          switch (p.type) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+              iprop = new Box({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.activeIProps.push(iprop)
+              break;
+
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+              iprop = new Ladder({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.activeIProps.push(iprop)
+              break;
+              
+            case 12:
+              iprop = new Chest({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.activeIProps.push(iprop)
+              break;
+
+            case 13:
+              iprop = new Coin({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.collectibles.push(iprop)
+              break;
+
+            case 14:
+              iprop = new Flag({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.activeIProps.push(iprop)
+              break;
+
+            case 15:
+              iprop = new Key({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.collectibles.push(iprop)
+              break;
+
+            case 16:
+              iprop = new Rune({
+                image: interactiveAssets[p.type],
+                position: {
+                  x: p.x + (i*tileSize) + (canvas.width*offset),
+                  y: p.y
+                }
+              })
+              this.collectibles.push(iprop)
+              break;
+            default:
+              break;
+          }
+        })
+      }
+    }
+  }
+
   draw() {
     for (let i = 0; i <= canvas.width/tileSize; i++) {
       for (let j = 0; j <= canvas.height/tileSize; j++) {
@@ -93,6 +197,14 @@ class Level {
     this.activeEnemies.forEach(enemy => {
       enemy.draw()
     });
+
+    this.activeIProps.forEach(iprop => {
+      iprop.draw()
+    })
+
+    this.collectibles.forEach(iprop => {
+      iprop.draw()
+    })
   }
 
   update(velocity) {
@@ -101,42 +213,40 @@ class Level {
       enemy.position.x += velocity
       enemy.update()
     });
+    this.activeIProps.forEach(iprop => {
+      iprop.position.x += velocity
+      iprop.update()
+    });
+    this.collectibles.forEach(iprop => {
+      iprop.position.x += velocity
+      iprop.update()
+    });
     if(this.page < Math.floor(this.pixelChange/canvas.width)+1){
       this.loadEnemies({section: (this.pixelChange+canvas.width)/tileSize})
+      this.loadIneractiveProps({section: (this.pixelChange+canvas.width)/tileSize})
       this.page++
     }
   }
 
-  getNearbyTiles(entityPosX){
+  getNearbyTiles(x, y){
     let tiles = []
-    if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)-1] != null){
-      for(let i = 0; i < canvas.height/tileSize; i++){
-        if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)-1][i] > 0){
+    if(map[Math.floor((x+this.pixelChange)/tileSize)] != null){
+      for(let i = (Math.floor(y/tileSize)-1); i < (Math.floor(y/tileSize))+3; i++){
+        if(map[Math.floor((x+this.pixelChange)/tileSize)][i] > 0){
           tiles.push({
-            type: map[Math.floor((entityPosX+this.pixelChange)/tileSize)][i],
-            x: (Math.floor((entityPosX+this.pixelChange)/tileSize-1)*tileSize)-this.pixelChange,
+            type: map[Math.floor((x+this.pixelChange)/tileSize)][i],
+            x: (Math.floor((x+this.pixelChange)/tileSize)*tileSize)-this.pixelChange,
             y: i*tileSize
           })
         }
       }
     }
-    if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)] != null){
-      for(let i = 0; i < canvas.height/tileSize; i++){
-        if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)][i] > 0){
+    if(map[Math.floor((x+this.pixelChange)/tileSize)+1] != null){
+      for(let i = (Math.floor(y/tileSize)-1); i < (Math.floor(y/tileSize))+3; i++){
+        if(map[Math.floor((x+this.pixelChange)/tileSize)+1][i] > 0){
           tiles.push({
-            type: map[Math.floor((entityPosX+this.pixelChange)/tileSize)][i],
-            x: (Math.floor((entityPosX+this.pixelChange)/tileSize)*tileSize)-this.pixelChange,
-            y: i*tileSize
-          })
-        }
-      }
-    }
-    if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)+1] != null){
-      for(let i = 0; i < canvas.height/tileSize; i++){
-        if(map[Math.floor((entityPosX+this.pixelChange)/tileSize)+1][i] > 0){
-          tiles.push({
-            type: map[Math.floor((entityPosX+this.pixelChange)/tileSize)+1][i],
-            x: (Math.floor((entityPosX+this.pixelChange)/tileSize)+1)*tileSize-this.pixelChange,
+            type: map[Math.floor((x+this.pixelChange)/tileSize)+1][i],
+            x: (Math.floor((x+this.pixelChange)/tileSize)+1)*tileSize-this.pixelChange,
             y: i*tileSize
           })
         }
