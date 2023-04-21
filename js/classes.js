@@ -24,11 +24,11 @@ class Sprite {
   }
 
   draw(){
-    c.fillText = 'white'
-    c.fillRect(this.position.x,
-      this.position.y,
-      this.width,
-      this.height)
+    // c.fillText = 'white'
+    // c.fillRect(this.position.x,
+    //   this.position.y,
+    //   this.width,
+    //   this.height)
     if(this.direction === 'right'){
       let image = this.sprites[this.animation].img
       c.drawImage(
