@@ -181,7 +181,7 @@ class Player extends Sprite{
   }
 
   fall(){
-    if((this.animation === 'jump' || this.animation === 'spin') &&
+    if((this.animation === 'jump') &&
     this.framesComplete == this.sprites[this.animation].frames - 1){
       this.setAnimation('fall')
     }
@@ -232,10 +232,10 @@ class Player extends Sprite{
     }, delay);
   }
 
-  doAction(cooldown = 400, delay = 100, animation = 'attack1') {
+  doAction(cooldown = 400, delay = 100, animation = 'attack2') {
     if(!this.attackBox.attacking){
       this.attackBox.attacking = true
-      this.setAnimation(animation, true)
+      this.setAnimation(animation, true, true)
       this.registerHit(delay)
       setTimeout(() => {
         this.attackBox.attacking = false

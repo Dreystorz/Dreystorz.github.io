@@ -166,111 +166,259 @@ const interactiveAssets = [
   new InteractiveImage('img/Assets/4 Animated objects/Rune.png',4,64,16),
 ]
 
-const sprites = {
-  img: {
-    img: new AssetImage('img/adventurer.png'),
+const playerAssets = {
+  idleImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Idle.png'),
     size: {
-      width: 400,
-      height: 444,
-      framesX: 8,
-      framesY: 12
+      width: 1620,
+      height: 162,
+      framesX: 10,
+      framesY: 1
     }
   },
-  imgReverse: {
-    img: new AssetImage('img/adventurer-reverse.png'),
+  idleImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Idle_reverse.png'),
     size: {
-      width: 400,
-      height: 444,
+      width: 1620,
+      height: 162,
+      framesX: 10,
+      framesY: 1
+    }
+  },
+  runImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Run.png'),
+    size: {
+      width: 1296,
+      height: 162,
       framesX: 8,
-      framesY: 12
+      framesY: 1
+    }
+  },
+  runImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Run_reverse.png'),
+    size: {
+      width: 1296,
+      height: 162,
+      framesX: 8,
+      framesY: 1
+    }
+  },
+  takeHitImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Take hit.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  takeHitImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Take hit_reverse.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  dieImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Death.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  dieImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Death_reverse.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  attack1Img: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack1.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  attack1ImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack1_reverse.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  attack2Img: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack2.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  attack2ImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack2_reverse.png'),
+    size: {
+      width: 1134,
+      height: 162,
+      framesX: 7,
+      framesY: 1
+    }
+  },
+  attack3Img: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack3.png'),
+    size: {
+      width: 1296,
+      height: 162,
+      framesX: 8,
+      framesY: 1
+    }
+  },
+  attack3ImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Attack3_reverse.png'),
+    size: {
+      width: 1296,
+      height: 162,
+      framesX: 8,
+      framesY: 1
+    }
+  },
+  jumpImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Jump.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  jumpImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Jump_reverse.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  fallImg: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Fall.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  fallImgReverse: {
+    img: new AssetImage('img/Fantasy Warrior/Sprites/Fall_reverse.png'),
+    size: {
+      width: 486,
+      height: 162,
+      framesX: 3,
+      framesY: 1
+    }
+  },
+  'idle': {
+    frames: 10,
+    frameTime: 8,
+    firstFrame: {
+      x: 1,
+      y: 1
     },
-    revComp: 0
+    vertOffset: -3,
+    img: 'idleImg'
   },
   'run': {
-    width: 25,
-    height: 36,
-    frames: 6,
+    frames: 8,
+    frameTime: 3,
+    firstFrame: {
+      x: 1,
+      y: 1
+    },
+    vertOffset: -3,
+    img: 'runImg'
+  },
+  'takeHit': {
+    frames: 3,
     frameTime: 5,
     firstFrame: {
       x: 1,
-      y: 2
+      y: 1
     },
-    vertOffset: 5,
-    img: 'img'
+    vertOffset: -3,
+    img: 'takeHitImg'
   },
-  'idle': {
-    width: 25,
-    height: 36,
-    frames: 4,
+  'die': {
+    frames: 7,
+    frameTime: 5,
+    firstFrame: {
+      x: 1,
+      y: 1
+    },
+    vertOffset: -3,
+    img: 'dieImg'
+  },
+  'attack1': {
+    frames: 7,
+    frameTime: 5,
+    firstFrame: {
+      x: 1,
+      y: 1
+    },
+    vertOffset: -3,
+    img: 'attack1Img'
+  },
+  'attack2': {
+    frames: 7,
+    frameTime: 5,
+    firstFrame: {
+      x: 1,
+      y: 1
+    },
+    vertOffset: -3,
+    img: 'attack2Img'
+  },
+  'attack3': {
+    frames: 7,
+    frameTime: 5,
+    firstFrame: {
+      x: 1,
+      y: 1
+    },
+    vertOffset: -3,
+    img: 'attack3Img'
+  },
+  'jump': {
+    frames: 3,
     frameTime: 10,
     firstFrame: {
       x: 1,
       y: 1
     },
-    vertOffset: 4,
-    revComp: -8,
-    img: 'img'
-  },
-  'jump': {
-    width: 25,
-    height: 30,
-    frames: 10,
-    frameTime: 4,
-    firstFrame: {
-      x: 7,
-      y: 2
-    },
-    vertOffset: 5,
-    img: 'img'
-  },
-  'spin': {
-    width: 25,
-    height: 30,
-    frames: 9,
-    frameTime: 4,
-    firstFrame: {
-      x: 8,
-      y: 2
-    },
-    vertOffset: 5,
-    img: 'img'
+    vertOffset: -3,
+    img: 'jumpImg'
   },
   'fall': {
-    width: 25,
-    height: 36,
-    frames: 2,
-    frameTime: 4,
-    firstFrame: {
-      x: 7,
-      y: 3
-    },
-    vertOffset: 5,
-    img: 'img'
-  },
-  'attack1': {
-    width: 40,
-    height: 35,
-    frames: 5,
-    frameTime: 4,
-    firstFrame: {
-      x: 3,
-      y: 6
-    },
-    vertOffset: 5,
-    img: 'img'
-  },
-  'die': {
-    width: 40,
-    height: 30,
-    frames: 7,
+    frames: 3,
     frameTime: 5,
     firstFrame: {
-      x: 7,
-      y: 8
+      x: 1,
+      y: 1
     },
-    vertOffset: 5,
-    img: 'img'
-  }
+    vertOffset: -3,
+    img: 'fallImg'
+  },
 }
 
 const skeleton = {
@@ -383,8 +531,6 @@ const skeleton = {
     }
   },
   'idle': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 8,
     firstFrame: {
@@ -395,8 +541,6 @@ const skeleton = {
     img: 'idleImg'
   },
   'walk': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 10,
     firstFrame: {
@@ -407,8 +551,6 @@ const skeleton = {
     img: 'walkImg'
   },
   'takeHit': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -419,8 +561,6 @@ const skeleton = {
     img: 'takeHitImg'
   },
   'die': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -431,8 +571,6 @@ const skeleton = {
     img: 'dieImg'
   },
   'attack1': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -443,8 +581,6 @@ const skeleton = {
     img: 'attack1Img'
   },
   'shield': {
-    width: 100,
-    height: 60,
     frames: 4,
     frameTime: 8,
     firstFrame: {
@@ -455,8 +591,6 @@ const skeleton = {
     img: 'shieldImg'
   },
   'holdShield': {
-    width: 100,
-    height: 60,
     frames: 1,
     frameTime: 8,
     firstFrame: {
@@ -560,8 +694,6 @@ const mushroom = {
     }
   },
   'idle': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 8,
     firstFrame: {
@@ -572,8 +704,6 @@ const mushroom = {
     img: 'idleImg'
   },
   'takeHit': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -584,8 +714,6 @@ const mushroom = {
     img: 'takeHitImg'
   },
   'die': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -596,8 +724,6 @@ const mushroom = {
     img: 'dieImg'
   },
   'attack1': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -608,8 +734,6 @@ const mushroom = {
     img: 'attack1Img'
   },
   'run': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -713,8 +837,6 @@ const goblin = {
     }
   },
   'idle': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 8,
     firstFrame: {
@@ -725,8 +847,6 @@ const goblin = {
     img: 'idleImg'
   },
   'takeHit': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -737,8 +857,6 @@ const goblin = {
     img: 'takeHitImg'
   },
   'die': {
-    width: 56,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -749,8 +867,6 @@ const goblin = {
     img: 'dieImg'
   },
   'attack1': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -761,8 +877,6 @@ const goblin = {
     img: 'attack1Img'
   },
   'run': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -848,8 +962,6 @@ const flyingEye = {
     }
   },
   'fly': {
-    width: 46,
-    height: 50,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -860,8 +972,6 @@ const flyingEye = {
     img: 'flyImg'
   },
   'idle': {
-    width: 46,
-    height: 50,
     frames: 8,
     frameTime: 4,
     firstFrame: {
@@ -872,8 +982,6 @@ const flyingEye = {
     img: 'flyImg'
   },
   'takeHit': {
-    width: 46,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -884,8 +992,6 @@ const flyingEye = {
     img: 'takeHitImg'
   },
   'die': {
-    width: 56,
-    height: 50,
     frames: 4,
     frameTime: 5,
     firstFrame: {
@@ -896,8 +1002,6 @@ const flyingEye = {
     img: 'dieImg'
   },
   'attack1': {
-    width: 100,
-    height: 60,
     frames: 8,
     frameTime: 4,
     firstFrame: {

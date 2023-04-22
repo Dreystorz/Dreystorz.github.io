@@ -15,8 +15,8 @@ function drawCanvas() {
 /*--------Asset Declerations-------*/
 const player = new Player({
   position: {x: 510, y: 440},
-  scale: 1.5,
-  sprites
+  scale: 1,
+  sprites: playerAssets
 })
 
 const level = new Level({player})
@@ -251,11 +251,7 @@ function controlPlayer() {
     keys.arrowUp.pressed = false
     keys.arrowDown.pressed = false
   } else if(keys.arrowUp.pressed  && !player.lastHit){
-    if(player.jumpCount == 2){
-      player.setAnimation('jump', true)
-    } else if (player.jumpCount == 1){
-      player.setAnimation('spin', true)
-    }
+    player.setAnimation('jump', true)
     player.jump()
     keys.arrowUp.pressed = false
   } else if(keys.arrowDown.pressed  && !player.lastHit){
