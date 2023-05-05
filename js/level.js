@@ -65,7 +65,8 @@ class Level {
   }
 
   loadIneractiveProps({section, offset = 1}){
-    console.log(section)
+    this.collectibles = this.collectibles.filter(item => !item.collected)
+    this.activeIProps = this.activeIProps.filter(obj => !obj.opened)
     for (let i = 0; i < canvas.width/tileSize; i++) {
       if(iProps[section+i] != undefined){
         iProps[section+i].forEach((p) => {

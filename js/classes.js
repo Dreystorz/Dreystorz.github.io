@@ -145,6 +145,8 @@ class Player extends Sprite{
     this.health = health
     this.keys = 0
     this.coins = 0
+    this.runes = 0
+    this.interact = false
   }
 
   draw() {
@@ -232,7 +234,7 @@ class Player extends Sprite{
     }, delay);
   }
 
-  doAction(cooldown = 400, delay = 100, animation = 'attack2') {
+  doAction(cooldown = 400, delay = 100, animation = 'attack1') {
     if(!this.attackBox.attacking){
       this.attackBox.attacking = true
       this.setAnimation(animation, true, true)
@@ -462,6 +464,7 @@ class InteractiveProp {
   }
 
   draw(){
+    if(this.collected) return
     // c.fillStyle = 'red'
     // c.fillRect(
     //   this.position.x,
@@ -481,10 +484,6 @@ class InteractiveProp {
       this.image.h
     )
   }
-
-  update(){
-    console.log('why')
-  }
 }
 
 class Box extends InteractiveProp {
@@ -496,11 +495,33 @@ class Box extends InteractiveProp {
     super.draw()
   }
   update(){
-
+ 
   }
-  open(){
-    if(this.opened){
+  open(player){
+    if(!this.opened){
       this.opened = true
+      let item
+      if(roll(0.9)){
+        item = new Coin({
+          image: interactiveAssets[13],
+          position: {
+            x: this.position.x + this.image.w/2,
+            y: this.position.y - 20
+          },
+          ready: false
+        })
+      } else {
+        item = new Rune({
+          image: interactiveAssets[16],
+          position: {
+            x: this.position.x + this.image.w/2,
+            y: this.position.y - 20
+          },
+          ready: false
+        })
+      }
+
+      level.collectibles.push(item)
     }
   }
 }
@@ -509,13 +530,32 @@ class Chest extends InteractiveProp {
   constructor({image, position}){
     super({image, position})
     this.opened = false
+    this.dropped = false
   }
   draw(){
     super.draw()
   }
   update(){
     if(this.opened){
-      this.frame = this.image.frames - 1
+      if(this.frameTimer >= this.image.frameTime){
+        if(this.frame < this.image.frames-1){
+          this.frame++
+        } else if(!this.dropped){
+          let rune = new Rune({
+            image: interactiveAssets[16],
+            position: {
+              x: this.position.x + this.image.w/2,
+              y: this.position.y - 20
+            },
+            ready: false
+          })
+          level.collectibles.push(rune)
+          this.dropped = true
+        }
+        this.frameTimer = 0
+      } else {
+        this.frameTimer++
+      }
     }
   }
   open(player){
@@ -527,9 +567,10 @@ class Chest extends InteractiveProp {
 }
 
 class Coin extends InteractiveProp {
-  constructor({image, position}){
+  constructor({image, position, ready = true}){
     super({image, position})
     this.collected = false
+    this.ready = ready
   }
   draw(){
     super.draw()
@@ -544,6 +585,18 @@ class Coin extends InteractiveProp {
       this.frameTimer = 0
     } else {
       this.frameTimer++
+    }
+    if(!this.ready){
+      setTimeout(() => {
+        this.ready = true
+      }, 700);
+    }
+  }
+
+  collect(entity){
+    if(!this.collected && this.ready){
+      this.collected = true
+      entity.coins++
     }
   }
 }
@@ -589,18 +642,25 @@ class Key extends InteractiveProp {
       this.frameTimer++
     }
   }
+
+  collect(entity){
+    if(!this.collected){
+      this.collected = true
+      entity.keys++
+    }
+  }
 }
 
 class Rune extends InteractiveProp {
-  constructor({image, position}){
+  constructor({image, position, ready = true}){
     super({image, position})
     this.collected = false
+    this.ready = ready
   }
   draw(){
     super.draw()
   }
   update(){
-    console.log(this.frame)
     if(this.frameTimer >= this.image.frameTime){
       if(this.frame < this.image.frames-1){
         this.frame++
@@ -611,5 +671,21 @@ class Rune extends InteractiveProp {
     } else {
       this.frameTimer++
     }
+    if(!this.ready){
+      setTimeout(() => {
+        this.ready = true
+      }, 700);
+    }
   }
+
+  collect(entity){
+    if(!this.collected && this.ready){
+      this.collected = true
+      entity.runes++
+    }
+  }
+}
+
+function roll(n){
+     return (Math.random() < n)
 }

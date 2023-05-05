@@ -66,11 +66,25 @@ function checkCollisions(){
 }
 
 function collectItems(entity){
-
+  level.collectibles.forEach(item => {
+    if(entity.position.x < item.position.x + item.image.w &&
+      entity.position.x + entity.width > item.position.x &&
+      entity.position.y < item.position.y + item.image.h &&
+      entity.position.y + entity.height > item.position.y){
+        item.collect(entity)
+    }
+  })
 }
 
 function checkInteract(entity){
-
+  level.activeIProps.forEach(prop => {
+    if(entity.position.x < prop.position.x + prop.image.w &&
+      entity.position.x + entity.width > prop.position.x &&
+      entity.position.y < prop.position.y + prop.image.h &&
+      entity.position.y + entity.height > prop.position.y && entity.interact){
+        prop.open(entity)
+    }
+  })
 }
 
 function checkHit(){
@@ -250,7 +264,7 @@ function controlPlayer() {
   if(keys.arrowUp.pressed && keys.arrowDown.pressed){
     keys.arrowUp.pressed = false
     keys.arrowDown.pressed = false
-  } else if(keys.arrowUp.pressed  && !player.lastHit){
+  } else if(keys.arrowUp.pressed  && !player.lastHit && player.jumpCount > 0){
     player.setAnimation('jump', true)
     player.jump()
     keys.arrowUp.pressed = false
@@ -264,6 +278,35 @@ function controlPlayer() {
   }
 }
 
+const coinCountImg = new Image()
+coinCountImg.src = 'img/Assets/CoinCount.png'
+
+const keyCountImg = new Image()
+keyCountImg.src = 'img/Assets/KeyCount.png'
+
+function drawCounts(){
+  c.fillStyle = 'black'
+  c.font = "18px sans-serif"
+  c.drawImage(
+    coinCountImg,
+    canvas.width - 100,
+    20,
+    44,
+    32
+  )
+  c.fillText(player.coins, canvas.width - 55, 42)
+
+  c.drawImage(
+    keyCountImg,
+    canvas.width - 100,
+    50,
+    44,
+    32
+  )
+  c.fillText(player.keys, canvas.width - 55, 72)
+}
+
+
 function animate() {
   window.requestAnimationFrame(animate)
   drawCanvas()
@@ -271,6 +314,7 @@ function animate() {
   player.update()
   controlPlayer()
   checkCollisions()
+  drawCounts()
 }
 
 window.addEventListener('keydown', (event) => {
@@ -294,6 +338,10 @@ window.addEventListener('keydown', (event) => {
     case ' ':
       keys.space.pressed = true
       break;
+
+    case 'Shift':
+      player.interact = true
+      break;
   
     default:
       break;
@@ -312,6 +360,10 @@ window.addEventListener('keyup', (event) => {
 
     case ' ':
       keys.space.pressed = false
+      break;
+
+    case 'Shift':
+      player.interact = false
       break;
   
     default:
