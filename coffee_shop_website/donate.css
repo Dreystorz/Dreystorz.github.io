@@ -1,0 +1,71 @@
+#group {
+  width: 80%;
+  padding-top: 95px;
+  padding-bottom: 95px;
+}
+
+#team-image {
+  width: 100%;
+  border-radius: 20px;
+}
+
+#team-name {
+  font-size: 67.2px;
+  font-family: 'Open Sans', sans-serif;
+  color: rgb(238, 183, 86);
+  font-weight: 500;
+  padding-bottom: 75px;
+}
+
+#member-names {
+  font-size: 40px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  padding-bottom: 75px;
+}
+
+#desc {
+  font-size: 23.8px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+#img-links {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 50px;
+}
+
+#gofundme-logo {
+  height: 50px;
+  object-fit: cover;
+}
+
+#cashapp-logo {
+  height: 50px;
+  object-fit: cover;
+  transform: scale(3)
+}
+
+#back-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+a:link {
+  text-decoration: none;
+  color: rgb(223, 158, 44);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: rgb(223, 158, 44);
+}
